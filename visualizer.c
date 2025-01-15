@@ -15,7 +15,7 @@ void generate_square_wave();
 
 int main (int argc, char* argv[]) {
     int wv;
-	printf("Choose a waveform: \nSine (0) \nSquare (1)");
+	printf("Choose a waveform: \nSine (0) \nSquare (1)\n");
 	scanf("%d", &wv);
 	
 	switch(wv) {

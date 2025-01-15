@@ -11,4 +11,7 @@
 
 ### To run:
 - run "make",
+- run "./visualizer" and input parameters,
 - then run "python3 plotter.py" and input the csv file you want to plot
+
+
