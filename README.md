@@ -14,4 +14,8 @@
 - run "./visualizer" and input parameters,
 - then run "python3 plotter.py" and input the csv file you want to plot
 
-
+#### Future Implementations (TODOs):
+- Add more signals
+	- step
+	- impulse
+	- different types of random signals

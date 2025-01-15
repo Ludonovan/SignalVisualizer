@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-file = input("Which file do you want to plot? ")
+filename = input("Which file do you want to plot? ")
+filename = "outputs/" + filename
 
 try:
-	data = pd.read_csv(file)
+	data = pd.read_csv(filename)
 
 	x = data["time"]
 	y = data["value"]
@@ -13,7 +14,7 @@ try:
 
 	plt.xlabel("Time")
 	plt.ylabel("Amplitude")
-	plt.title("Plot of " + file)
+	plt.title("Plot of " + filename)
 	plt.grid(True)
 	plt.show()
 
