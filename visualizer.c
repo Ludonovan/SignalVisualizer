@@ -10,7 +10,6 @@
 
 #define PI 3.14159
 
-void error(char *msg);
 void generate_sine();
 void generate_square_wave();
 void generate_triangle_wave();
@@ -19,7 +18,9 @@ void generate_step_function();
 void generate_impulse_wave();
 void generate_exponential_decay();
 void generate_random_waveform();
-
+FILE *open_file(char *filename);
+void error(char *msg);
+    
 int main (int argc, char* argv[]) {
     int wv;
 	printf("Choose a waveform: \nSine (0) \nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nRandom (7)\n:");
@@ -61,11 +62,8 @@ int main (int argc, char* argv[]) {
  * Generate a sine wave
  */
 void generate_sine() {
-    char *filename = "outputs/sine.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) 
-        error("File failed to open.");
- 
+    FILE *file = open_file("outputs/sine.csv");
+    
     double amp, freq, phase, duration, sampling_rate;
     printf("Amplitude: ");
     scanf("%lf", &amp);
@@ -78,8 +76,6 @@ void generate_sine() {
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 	
-	fprintf(file, "time,value\n");
-	
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
         fprintf(file, "%lf,%lf\n", t, (amp * sin((2 * PI * freq * t) + phase)));
     }
@@ -91,10 +87,8 @@ void generate_sine() {
  * Generate a square wave
  */
 void generate_square_wave() {
-	char *filename = "outputs/square.csv";
-	FILE *file = fopen(filename, "w");
-	if(!file)
-		error("File failed to open.");
+
+    FILE *file = open_file("outputs/square.csv");
 
 	double amp, freq, duration, sampling_rate;
 	printf("Amplitude: ");
@@ -106,8 +100,6 @@ void generate_square_wave() {
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 	
-	fprintf(file, "time,value\n");
-
 	for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
 		fprintf(file, "%lf,%lf\n", t, sin(2 * PI * freq * t) >= 0 ? amp : -amp);
 	}
@@ -119,12 +111,8 @@ void generate_square_wave() {
  * Generate a triangular wave
  */
 void generate_triangle_wave() {
-    char *filename = "outputs/triangle.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        error("File failed to open");
-        return;
-    }
+
+    FILE *file = open_file("outputs/triangle.csv");
 
     double amp, freq, duration, sampling_rate;
     printf("Amplitude: ");
@@ -140,8 +128,6 @@ void generate_triangle_wave() {
     if (sampling_rate < 2 * freq) {
         printf("Warning: Sampling rate is too low to accurately capture the waveform.\n");
     }
-
-    fprintf(file, "time,value\n");
 
     double period = 1.0 / freq; 
 
@@ -163,12 +149,8 @@ void generate_triangle_wave() {
  * Generate a sawtooth wave
  */
 void generate_sawtooth_wave() {
-    char *filename = "outputs/sawtooth.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        error("File failed to open");
-        return;
-    }
+   
+    FILE *file = open_file("outputs/sawtooth.csv");
 
     double amp, freq, duration, sampling_rate;
     printf("Amplitude: ");
@@ -179,8 +161,6 @@ void generate_sawtooth_wave() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-
-    fprintf(file, "time,value\n");
 
     double period = 1.0 / freq;
 
@@ -196,12 +176,8 @@ void generate_sawtooth_wave() {
  * Generate a step function
  */
 void generate_step_function() {
-    char *filename = "outputs/step.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        error("File failed to open");
-        return;
-    }
+
+    FILE *file = open_file("outputs/step.csv");
 
     double amp, freq, duration, sampling_rate;
     printf("Amplitude: ");
@@ -213,13 +189,10 @@ void generate_step_function() {
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 
-    fprintf(file, "time,value\n");
-
     double period = 1.0 / freq;
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        double phase = fmod(t, period) / period; // Normalize phase to [0, 1)
-        double value = phase < 0.5 ? amp : -amp; // High for the first half, low for the second half
+        
         fprintf(file, "%lf,%lf\n", t, value);
     }
     fclose(file);
@@ -229,12 +202,8 @@ void generate_step_function() {
  * Generate an impulse wave
  */
 void generate_impulse_wave() {
-    char *filename = "outputs/impulse.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        error("File failed to open");
-        return;
-    }
+   
+    FILE *file = open_file("outputs/impulse.csv");
 
     double amp, freq, duration, sampling_rate;
     printf("Amplitude: ");
@@ -245,8 +214,6 @@ void generate_impulse_wave() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-
-    fprintf(file, "time,value\n");
 
     double period = 1.0 / freq;
 
@@ -262,12 +229,8 @@ void generate_impulse_wave() {
  * Generate a waveform that decays exponentially
  */
 void generate_exponential_decay() {
-    char *filename = "outputs/exponential.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        error("File failed to open");
-        return;
-    }
+
+    FILE *file = open_file("outputs/exp_decay.csv");
 
     double amp, decay_rate, duration, sampling_rate;
     printf("Amplitude: ");
@@ -278,8 +241,6 @@ void generate_exponential_decay() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-
-    fprintf(file, "time,value\n");
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
         double value = amp * exp(-decay_rate * t); // Exponential decay formula
@@ -292,12 +253,8 @@ void generate_exponential_decay() {
  * Generate a random waveform
  */
 void generate_random_waveform() {
-    char *filename = "outputs/random.csv";
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        perror("File failed to open");
-        return;
-    }
+
+    FILE *file = open_file("outputs/random.csv");
 
     double amp, duration, sampling_rate;
     printf("Amplitude: ");
@@ -306,8 +263,6 @@ void generate_random_waveform() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-
-    fprintf(file, "time,value\n");
 
     srand(time(NULL)); // Seed random number generator
 
@@ -319,9 +274,22 @@ void generate_random_waveform() {
 }
 
 /*
+ * Open a file with input name
+ */
+FILE *open_file(char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (!file) {
+        error("File failed to open");
+    }
+    fprintf(file, "time,value\n");
+    return file;
+}
+
+/*
  * Shortcut for printing to stderr
  */
 void error(char *msg) {
     fprintf(stderr, "%s\n", msg);
     exit(1);
 }
+
