@@ -12,10 +12,6 @@
 ### To run:
 - run "make",
 - run "./visualizer" and input parameters,
-- then run "python3 plotter.py" and input the csv file you want to plot
+- then run "python3 plotter.py" and input the name of the csv file you want to plot
+	- Only input the filename, not the whole path ("sine.csv" instead of "outputs/sine.csv")
 
-#### Future Implementations (TODOs):
-- Add more signals
-	- step
-	- impulse
-	- different types of random signals
