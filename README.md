@@ -10,8 +10,9 @@
 - make
 
 ### To run:
-- run "make",
-- run "./visualizer" and input parameters,
+- run "make"
+- run "./visualizer" and input parameters
+- "ls outputs" to see the newly created file
 - then run "python3 plotter.py" and input the name of the csv file you want to plot
 	- Only input the filename, not the whole path ("sine.csv" instead of "outputs/sine.csv")
 
@@ -35,4 +36,4 @@
 
 ### TODO
 - Fix step function, currently returning square wave.
-
+- Make start and stop times (or start/run times) an input

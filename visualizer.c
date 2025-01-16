@@ -18,6 +18,9 @@ void generate_step_function();
 void generate_impulse_wave();
 void generate_exponential_decay();
 void generate_random_waveform();
+void test_wave();
+void generate_wave_from_input();
+void parse_input_function(char *func);
 FILE *open_file(char *filename);
 void error(char *msg);
     
@@ -25,8 +28,8 @@ int main (int argc, char* argv[]) {
     int wv;
 	printf("Choose a waveform: \nSine (0) \nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nRandom (7)\n:");
 	scanf("%d", &wv);
-	
-	switch(wv) {
+
+   	switch(wv) {
 		case(0):
 			generate_sine();
 			break;
@@ -51,6 +54,9 @@ int main (int argc, char* argv[]) {
 		case(7):
 			generate_random_waveform();
 			break;
+        case(-1):
+            test_wave();
+            break;
 		default:
 			error("Error chosing waveform.");
 			break;
@@ -90,18 +96,20 @@ void generate_square_wave() {
 
     FILE *file = open_file("outputs/square.csv");
 
-	double amp, freq, duration, sampling_rate;
+	double amp, freq, duration, sampling_rate, phase;
 	printf("Amplitude: ");
     scanf("%lf", &amp);
     printf("Frequency: ");
     scanf("%lf", &freq);
+    printf("Phase: ");
+    scanf("%lf", &phase);
     printf("Duration: ");
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 	
 	for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-		fprintf(file, "%lf,%lf\n", t, sin(2 * PI * freq * t) >= 0 ? amp : -amp);
+		fprintf(file, "%lf,%lf\n", t, sin((2 * PI * freq * t) + phase) >= 0 ? amp : -amp);
 	}
 
 	fclose(file);
@@ -132,13 +140,13 @@ void generate_triangle_wave() {
     double period = 1.0 / freq; 
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        double phase = fmod(t, period) / period; // Normalize phase to [0, 1)
+        double phase = fmod(t, period) / period;
         double value;
 
         if (phase < 0.5) {
-            value = 4 * amp * phase - amp; // Rising edge
+            value = 4 * amp * phase - amp; 
         } else {
-            value = amp - 4 * amp * (phase - 0.5); // Falling edge
+            value = amp - 4 * amp * (phase - 0.5); 
         }
         fprintf(file, "%lf,%lf\n", t, value);
     }
@@ -179,21 +187,14 @@ void generate_step_function() {
 
     FILE *file = open_file("outputs/step.csv");
 
-    double amp, freq, duration, sampling_rate;
-    printf("Amplitude: ");
-    scanf("%lf", &amp);
-    printf("Frequency: ");
-    scanf("%lf", &freq);
+    double duration, sampling_rate; 
     printf("Duration: ");
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 
-    double period = 1.0 / freq;
-
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        
-        fprintf(file, "%lf,%lf\n", t, value);
+        fprintf(file, "%lf,%lf\n", t, floor(t));
     }
     fclose(file);
 }
@@ -218,8 +219,8 @@ void generate_impulse_wave() {
     double period = 1.0 / freq;
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        double phase = fmod(t, period); // Phase within period
-        double value = (phase < (1.0 / sampling_rate)) ? amp : 0; // Spike at the beginning of each period
+        double phase = fmod(t, period); 
+        double value = (phase < (1.0 / sampling_rate)) ? amp : 0; 
         fprintf(file, "%lf,%lf\n", t, value);
     }
     fclose(file);
@@ -243,7 +244,7 @@ void generate_exponential_decay() {
     scanf("%lf", &sampling_rate);
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        double value = amp * exp(-decay_rate * t); // Exponential decay formula
+        double value = amp * exp(-decay_rate * t); 
         fprintf(file, "%lf,%lf\n", t, value);
     }
     fclose(file);
@@ -264,14 +265,49 @@ void generate_random_waveform() {
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 
-    srand(time(NULL)); // Seed random number generator
+    srand(time(NULL)); 
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        double value = ((double)rand() / RAND_MAX) * 2 * amp - amp; // Random value in range [-amp, amp]
+        double value = ((double)rand() / RAND_MAX) * 2 * amp - amp; 
         fprintf(file, "%lf,%lf\n", t, value);
     }
     fclose(file);
 }
+
+/*
+ * TODO
+ * Generates a waveform based on an input function
+ */
+void generate_wave_from_input() {
+    FILE *file = open_file("outputs/function.csv");
+
+    char *func;
+    printf("Input the function. (ex: 2sin(2*pi*30*t+(pi/2)))\n: ");
+    scanf("%s", func);
+    parse_input_function(func); 
+    
+}
+
+/*
+ * TODO
+ * Parse an input function
+ */
+void parse_input_function(char *func) {
+
+}
+
+/*
+ * For testing
+ */
+void test_wave() {
+    FILE *test_file = open_file("outputs/test.csv");
+
+/*    for (double t = -10.0; t <= 10.0; t += 0.01) {
+        fprintf(test_file, "%lf,%lf\n", t, );
+    }
+*/
+    fclose(test_file);
+}    
 
 /*
  * Open a file with input name
