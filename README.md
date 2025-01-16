@@ -34,9 +34,17 @@
         - Random
 - plotter.py: Outputs a graphical window containing a plot of the signal.
 
-### TODO
+### TODO (Possible additional features)
 - Create additional inputs for waves:
     - Start/Stop/Run times
     - Vmax/Vmin
     - Phase in rads || deg
 - Signal manipulation tools
+    - Filters
+        - low-pass, high-pass, etc.
+    - Amplifiers
+    - Time/Frequency domain manipulation
+        - scaling, shifting, reversing, etc.
+        - Fourier transform
+    - Modulation/Demodulation
+    - Compression
