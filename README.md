@@ -28,12 +28,15 @@
         - Square
         - Triangular
         - Sawtooth
-        - Step (WIP)
+        - Step
         - Impulse
         - Exponential Decay
         - Random
 - plotter.py: Outputs a graphical window containing a plot of the signal.
 
 ### TODO
-- Fix step function, currently returning square wave.
-- Make start and stop times (or start/run times) an input
+- Create additional inputs for waves:
+    - Start/Stop/Run times
+    - Vmax/Vmin
+    - Phase in rads || deg
+- Signal manipulation tools
