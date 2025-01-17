@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-filename = input("\nWhich file do you want to plot? ")
+filename = input("Which file do you want to plot? ")
 filename = "outputs/" + filename
 
-ft = input("\nFouier Transform? (Y/N): ") 
+ft = input("Fouier Transform? (Y/N): ") 
 
 try:
     data = pd.read_csv(filename)
@@ -22,7 +22,7 @@ try:
     
     elif (ft.upper() == 'Y'):
         FFT = np.fft.fft(x)
-        freqs = np.fft.fftfreq(len(x), y[1] - y[0])
+        freqs = np.fft.fftfreq(len(x), y[2] - y[1])
 
         plt.plot(freqs, np.abs(FFT))
 

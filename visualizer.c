@@ -7,7 +7,7 @@
 
 int main (int argc, char* argv[]) {
     int wv;
-	printf("Choose a waveform: \nSine (0) \nSquare (1)\nTriangle (2)\nSawtooth (3)\nStair (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7) \nRandom (8)\n:");
+	printf("Choose a waveform: \nSine (0)\nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7)\nRectangle (8)\nRandom (9)\n:");
 	scanf("%d", &wv);
 
    	switch(wv) {
@@ -36,6 +36,9 @@ int main (int argc, char* argv[]) {
 			generate_sinc_wave();
 			break;
 		case(8):
+			generate_rect_wave();
+			break;
+		case(9):
 			generate_random_waveform();
 			break;
         case(-1):
@@ -171,14 +174,16 @@ void generate_step_function() {
 
     FILE *file = open_file("outputs/step.csv");
 
-    double duration, sampling_rate; 
-    printf("Duration: ");
-    scanf("%lf", &duration);
-    printf("Sampling Rate: ");
+    double start, amp, sampling_rate; 
+    printf("Start time: ");
+    scanf("%lf", &start);
+    printf("Amplitude: ");
+    scanf("%lf", &amp);
+	printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 
-    for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
-        fprintf(file, "%lf,%lf\n", t, floor(t));
+    for (double t = start - 5; t <= start + 5; t += (1.0 / sampling_rate)) {
+        fprintf(file, "%lf,%lf\n", t, (t >= start) ? amp : 0);
     }
     fclose(file);
 }
@@ -282,7 +287,27 @@ void generate_sinc_wave() {
     fclose(file);
 }    
 
+/*
+ * Generates a rectangle wave 
+ */
+void generate_rect_wave() {
+    FILE *file = open_file("outputs/rect.csv");
+	
+	double amp, start, stop;
+	
+	printf("Amplitude: ");
+	scanf("%lf", &amp);
+	printf("Start time: ");
+	scanf("%lf", &start);
+	printf("Stop time: ");
+	scanf("%lf", &stop);
 
+    for (double t = start - 1; t <= stop + 1; t += 0.01) {
+        fprintf(file, "%lf,%lf\n", t, (t >= start && t <= stop) ? amp : 0);
+    }
+
+    fclose(file);
+}
 
 
 /*
@@ -312,9 +337,18 @@ void parse_input_function(char *func) {
  */
 void test_wave() {
     FILE *test_file = open_file("outputs/test.csv");
+	
+	double amp, start, stop;
+	
+	printf("Amplitude: ");
+	scanf("%lf", &amp);
+	printf("Start time: ");
+	scanf("%lf", &start);
+	printf("Stop time: ");
+	scanf("%lf", &stop);
 
-    for (double t = -10.0; t <= 10.0; t += 0.01) {
-        fprintf(test_file, "%lf,%lf\n", t, ((sin(PI*t)) / (PI*t) ));
+    for (double t = start - 1; t <= stop + 1; t += 0.01) {
+        fprintf(test_file, "%lf,%lf\n", t, (t >= start && t <= stop) ? amp : 0);
     }
 
     fclose(test_file);
