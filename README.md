@@ -28,13 +28,16 @@
         - Square
         - Triangular
         - Sawtooth
-        - Step
+        - Staircase
         - Impulse
         - Exponential Decay
+        - Sinc
         - Random
 - plotter.py: Outputs a graphical window containing a plot of the signal.
+    - Can also do FFT on signal.
 
 ### TODO (Possible additional features)
+- Create *Actual* step signal
 - Create additional inputs for waves:
     - Start/Stop/Run times
     - Vmax/Vmin
@@ -45,6 +48,5 @@
     - Amplifiers
     - Time/Frequency domain manipulation
         - scaling, shifting, reversing, etc.
-        - Fourier transform
     - Modulation/Demodulation
     - Compression

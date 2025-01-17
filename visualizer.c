@@ -2,31 +2,12 @@
  * Generates a .csv file with data correlating to a waveform 
  * Started on 1/14/25 by Lucas Donovan
  */
-    
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
 
-#define PI 3.14159
+#include "visualizer.h"
 
-void generate_sine();
-void generate_square_wave();
-void generate_triangle_wave();
-void generate_sawtooth_wave();
-void generate_step_function();
-void generate_impulse_wave();
-void generate_exponential_decay();
-void generate_random_waveform();
-void test_wave();
-void generate_wave_from_input();
-void parse_input_function(char *func);
-FILE *open_file(char *filename);
-void error(char *msg);
-    
 int main (int argc, char* argv[]) {
     int wv;
-	printf("Choose a waveform: \nSine (0) \nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nRandom (7)\n:");
+	printf("Choose a waveform: \nSine (0) \nSquare (1)\nTriangle (2)\nSawtooth (3)\nStair (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7) \nRandom (8)\n:");
 	scanf("%d", &wv);
 
    	switch(wv) {
@@ -52,6 +33,9 @@ int main (int argc, char* argv[]) {
 			generate_exponential_decay();
 			break;
 		case(7):
+			generate_sinc_wave();
+			break;
+		case(8):
 			generate_random_waveform();
 			break;
         case(-1):
@@ -274,6 +258,33 @@ void generate_random_waveform() {
     fclose(file);
 }
 
+
+/*
+ * Generates a sinc wave
+ */
+void generate_sinc_wave() {
+    FILE *file = open_file("outputs/sinc.csv");
+	
+	double amp, duration, sampling_rate;
+    printf("Amplitude: ");
+    scanf("%lf", &amp);
+    printf("Duration: ");
+    scanf("%lf", &duration);
+    printf("Sampling Rate: ");
+    scanf("%lf", &sampling_rate);
+	
+	double half_duration = duration / 2;
+
+    for (double t = -half_duration; t <= half_duration; t += 1.0 / sampling_rate) {
+        fprintf(file, "%lf,%lf\n", t, ((sin(PI*t)) / (PI*t) ));
+    }
+
+    fclose(file);
+}    
+
+
+
+
 /*
  * TODO
  * Generates a waveform based on an input function
@@ -302,10 +313,10 @@ void parse_input_function(char *func) {
 void test_wave() {
     FILE *test_file = open_file("outputs/test.csv");
 
-/*    for (double t = -10.0; t <= 10.0; t += 0.01) {
-        fprintf(test_file, "%lf,%lf\n", t, );
+    for (double t = -10.0; t <= 10.0; t += 0.01) {
+        fprintf(test_file, "%lf,%lf\n", t, ((sin(PI*t)) / (PI*t) ));
     }
-*/
+
     fclose(test_file);
 }    
 
