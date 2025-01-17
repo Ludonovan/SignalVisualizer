@@ -6,6 +6,7 @@
 - python3
 - matplotlib
 - pandas
+- numpy
 - gcc
 - make
 
@@ -16,11 +17,6 @@
 - then run "python3 plotter.py" and input the name of the csv file you want to plot
 	- Only input the filename, not the whole path ("sine.csv" instead of "outputs/sine.csv")
 
-### Inputs
-- Desired Amplitude, Frequency, and/or Phase.
-- Duration: How long the simulation should run.
-- Sampling rate: Number of data points per unit time.
-
 ### Outputs
 - visualizer.c: Outputs a .csv file containing data representing the signal
     - Can output,
@@ -28,16 +24,16 @@
         - Square
         - Triangular
         - Sawtooth
-        - Staircase
+        - Step
         - Impulse
         - Exponential Decay
         - Sinc
+        - Rectangle 
         - Random
 - plotter.py: Outputs a graphical window containing a plot of the signal.
     - Can also do FFT on signal.
 
 ### TODO (Possible additional features)
-- Create *Actual* step signal
 - Create additional inputs for waves:
     - Start/Stop/Run times
     - Vmax/Vmin
