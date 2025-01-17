@@ -7,7 +7,7 @@
 
 int main (int argc, char* argv[]) {
     int wv;
-	printf("Choose a waveform: \nSine (0)\nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7)\nRectangle (8)\nRandom (9)\n:");
+	printf("Choose a waveform: \nSine (0)\nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7)\nRectangle (8)\nStaircase (9)\nRandom (10)\n:");
 	scanf("%d", &wv);
 
    	switch(wv) {
@@ -39,6 +39,9 @@ int main (int argc, char* argv[]) {
 			generate_rect_wave();
 			break;
 		case(9):
+			generate_stair_wave();
+			break;
+		case(10):
 			generate_random_waveform();
 			break;
         case(-1):
@@ -68,7 +71,9 @@ void generate_sine() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-	
+
+	nyquist_check(freq, sampling_rate);
+
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
         fprintf(file, "%lf,%lf\n", t, (amp * sin((2 * PI * freq * t) + phase)));
     }
@@ -94,7 +99,9 @@ void generate_square_wave() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-	
+
+	nyquist_check(freq, sampling_rate);
+
 	for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
 		fprintf(file, "%lf,%lf\n", t, sin((2 * PI * freq * t) + phase) >= 0 ? amp : -amp);
 	}
@@ -118,11 +125,8 @@ void generate_triangle_wave() {
     scanf("%lf", &duration);
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-
-    // Nyquist Check
-    if (sampling_rate < 2 * freq) {
-        printf("Warning: Sampling rate is too low to accurately capture the waveform.\n");
-    }
+	
+	nyquist_check(freq, sampling_rate);
 
     double period = 1.0 / freq; 
 
@@ -157,7 +161,9 @@ void generate_sawtooth_wave() {
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 
-    double period = 1.0 / freq;
+	nyquist_check(freq, sampling_rate);
+    
+	double period = 1.0 / freq;
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
         double phase = fmod(t, period) / period; 
@@ -205,7 +211,9 @@ void generate_impulse_wave() {
     printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
 
-    double period = 1.0 / freq;
+	nyquist_check(freq, sampling_rate);
+    
+	double period = 1.0 / freq;
 
     for (double t = 0; t <= duration; t += (1.0 / sampling_rate)) {
         double phase = fmod(t, period); 
@@ -263,7 +271,6 @@ void generate_random_waveform() {
     fclose(file);
 }
 
-
 /*
  * Generates a sinc wave
  */
@@ -293,7 +300,7 @@ void generate_sinc_wave() {
 void generate_rect_wave() {
     FILE *file = open_file("outputs/rect.csv");
 	
-	double amp, start, stop;
+	double amp, start, stop, sampling_rate;
 	
 	printf("Amplitude: ");
 	scanf("%lf", &amp);
@@ -301,14 +308,38 @@ void generate_rect_wave() {
 	scanf("%lf", &start);
 	printf("Stop time: ");
 	scanf("%lf", &stop);
+	printf("Sampling Rate: ");
+    scanf("%lf", &sampling_rate);
+	
 
-    for (double t = start - 1; t <= stop + 1; t += 0.01) {
+    for (double t = start - 1; t <= stop + 1; t += (1.0 / sampling_rate)) {
         fprintf(file, "%lf,%lf\n", t, (t >= start && t <= stop) ? amp : 0);
     }
 
     fclose(file);
 }
 
+/*
+ * Generates a staircase wave 
+ */
+void generate_stair_wave() {
+    FILE *file = open_file("outputs/stair.csv");
+	
+	double start, stop, sampling_rate;
+	
+	printf("Start time: ");
+	scanf("%lf", &start);
+	printf("Stop time: ");
+	scanf("%lf", &stop);
+	printf("Sampling Rate: ");
+    scanf("%lf", &sampling_rate);
+	
+    for (double t = start; t <= stop; t += (1.0 / sampling_rate)) {
+        fprintf(file, "%lf,%lf\n", t, floor(t));
+    }
+
+    fclose(file);
+}
 
 /*
  * TODO
@@ -347,12 +378,23 @@ void test_wave() {
 	printf("Stop time: ");
 	scanf("%lf", &stop);
 
-    for (double t = start - 1; t <= stop + 1; t += 0.01) {
+	//nyquist_check(freq, sampling_rate);
+    
+	for (double t = start - 1; t <= stop + 1; t += 0.01) {
         fprintf(test_file, "%lf,%lf\n", t, (t >= start && t <= stop) ? amp : 0);
     }
 
     fclose(test_file);
 }    
+
+/*
+ * Perform a Nyquist check to ensure accurate plotting 
+ */
+void nyquist_check(double freq, double sampling_rate) {
+    if (sampling_rate < 2 * freq) {
+        error("Sampling rate is too low to accurately capture the waveform.\n");
+    }
+}
 
 /*
  * Open a file with input name
