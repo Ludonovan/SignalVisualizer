@@ -22,7 +22,7 @@ try:
     
     elif (ft.upper() == 'Y'):
         FFT = np.fft.fft(x)
-        freqs = np.fft.fftfreq(len(x), y[2] - y[1])
+        freqs = np.fft.fftfreq(len(x), y[1] - y[0])
 
         plt.plot(freqs, np.abs(FFT))
 

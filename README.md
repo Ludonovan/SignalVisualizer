@@ -30,6 +30,7 @@
         - Sinc
         - Rectangle 
         - Staircase
+        - Damped Sine
         - Random
 - plotter.py: Outputs a graphical window containing a plot of the signal.
     - Can also do FFT on signal.

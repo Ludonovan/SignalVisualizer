@@ -7,7 +7,7 @@
 
 int main (int argc, char* argv[]) {
     int wv;
-	printf("Choose a waveform: \nSine (0)\nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7)\nRectangle (8)\nStaircase (9)\nRandom (10)\n:");
+	printf("Choose a waveform: \nSine (0)\nSquare (1)\nTriangle (2)\nSawtooth (3)\nStep (4)\nImpulse (5)\nExponential Decay (6)\nSinc(7)\nRectangle (8)\nStaircase (9)\nDamped Sine (10)\nRandom (11)\n:");
 	scanf("%d", &wv);
 
    	switch(wv) {
@@ -42,6 +42,9 @@ int main (int argc, char* argv[]) {
 			generate_stair_wave();
 			break;
 		case(10):
+			generate_damped_sine();
+			break;
+		case(11):
 			generate_random_waveform();
 			break;
         case(-1):
@@ -310,7 +313,6 @@ void generate_rect_wave() {
 	scanf("%lf", &stop);
 	printf("Sampling Rate: ");
     scanf("%lf", &sampling_rate);
-	
 
     for (double t = start - 1; t <= stop + 1; t += (1.0 / sampling_rate)) {
         fprintf(file, "%lf,%lf\n", t, (t >= start && t <= stop) ? amp : 0);
@@ -341,6 +343,38 @@ void generate_stair_wave() {
     fclose(file);
 }
 
+
+/*
+ * Generates a damped sine wave 
+ */
+void generate_damped_sine() {
+    FILE *file = open_file("outputs/damped_sine.csv");
+	
+	double amp, freq, start, stop, damp, sampling_rate;
+	
+	printf("Amplitude: ");
+	scanf("%lf", &amp);
+	printf("Frequency: ");
+	scanf("%lf", &freq);
+	printf("Start time: ");
+	scanf("%lf", &start);
+	printf("Stop time: ");
+	scanf("%lf", &stop);
+	printf("Dampening constant: ");
+	scanf("%lf", &damp);
+	printf("Sampling rate: ");
+	scanf("%lf", &sampling_rate);
+
+	nyquist_check(freq, sampling_rate);
+    
+	for (double t = start; t <= stop; t += (1.0 / sampling_rate)) {
+        fprintf(file, "%lf,%lf\n", t, (pow(2.71828, -damp * t) * (amp * sin(2 * PI * freq * t))));
+    }
+
+    fclose(file);
+} 
+
+
 /*
  * TODO
  * Generates a waveform based on an input function
@@ -352,7 +386,6 @@ void generate_wave_from_input() {
     printf("Input the function. (ex: 2sin(2*pi*30*t+(pi/2)))\n: ");
     scanf("%s", func);
     parse_input_function(func); 
-    
 }
 
 /*
@@ -369,19 +402,29 @@ void parse_input_function(char *func) {
 void test_wave() {
     FILE *test_file = open_file("outputs/test.csv");
 	
-	double amp, start, stop;
+	double amp, freq, phase, start, stop, damp, sampling_rate;
 	
 	printf("Amplitude: ");
 	scanf("%lf", &amp);
+	printf("Frequency: ");
+	scanf("%lf", &freq);
+	printf("Phase: ");
+	scanf("%lf", &phase);
 	printf("Start time: ");
 	scanf("%lf", &start);
 	printf("Stop time: ");
 	scanf("%lf", &stop);
+	printf("Dampening constant: ");
+	scanf("%lf", &damp);
+	printf("Sampling rate: ");
+	scanf("%lf", &sampling_rate);
 
-	//nyquist_check(freq, sampling_rate);
+	nyquist_check(freq, sampling_rate);
     
-	for (double t = start - 1; t <= stop + 1; t += 0.01) {
-        fprintf(test_file, "%lf,%lf\n", t, (t >= start && t <= stop) ? amp : 0);
+	for (double t = start; t <= stop; t += (1.0 / sampling_rate)) {
+		//if (/* t is an integer */)	
+			freq = 2 * freq + 1;
+        fprintf(test_file, "%lf,%lf\n", t, amp * sin((2 * PI * freq * t) + phase));
     }
 
     fclose(test_file);
@@ -401,7 +444,7 @@ void nyquist_check(double freq, double sampling_rate) {
  */
 FILE *open_file(char *filename) {
     FILE *file = fopen(filename, "w");
-    if (!file) {
+	if (!file) {
         error("File failed to open");
     }
     fprintf(file, "time,value\n");
