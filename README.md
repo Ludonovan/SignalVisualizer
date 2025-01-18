@@ -34,6 +34,7 @@
         - Random
 - plotter.py: Outputs a graphical window containing a plot of the signal.
     - Can also do FFT on signal.
+- Sample output .csv files can be found in the outputs/samples/ folder
 
 ### TODO (Possible additional features)
 - Create additional inputs for waves:
